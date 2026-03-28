@@ -1,0 +1,19 @@
+[
+  {
+    "id": "247kan",
+    "name": "247看",
+    "type": 1,
+    "api": "https://247kan.com",
+    "nsfw": false,
+    "logo": "https://247kan.com/logo.png",
+    "desc": "247kan JS source",
+    "extra": {
+      "js": {
+        "category": "const types=await apiGet(\"/types\");return types.filter(item=>MAIN_CATEGORY_IDS.includes(text(item.type_id))).sort((a,b)=>Number(a.type_sort||0)-Number(b.type_sort||0)).map(item=>({text:text(item.type_name),id:text(item.type_id)}))",
+        "home": "const category=text(env.get(\"category\",\"\"));const page=Number(env.get(\"page\",1));if(category){const list=await apiGet(`/categories/${category}/videos`,{page,limit:PAGE_SIZE,sort:\"-vod_time\"});return(list.videos||[]).map(item=>movieOf(item))}const blocks=await Promise.all(HOME_CATEGORY_IDS.map(async categoryId=>{const data=await apiGet(`/categories/${categoryId}/videos`,{page:1,limit:12,sort:\"-vod_time\"});const titles={\"1\":\"\\u6700\\u65B0\\u7535\\u5F71\",\"2\":\"\\u6700\\u65B0\\u5267\\u96C6\",\"3\":\"\\u6700\\u65B0\\u7EFC\\u827A\",\"4\":\"\\u6700\\u65B0\\u52A8\\u6F2B\"};return{type:\"card\",title:titles[categoryId]||`分类 ${categoryId}`,videos:(data.videos||[]).map(item=>movieOf(item)),extra:{categoryId}}}));return{type:\"complex\",data:blocks.filter(block=>(block.videos||[]).length>0)}",
+        "detail": "const movieId=text(env.get(\"movieId\",\"\"));const detail=await apiGet(`/videos/${movieId}`);const routes=Array.isArray(detail.available_routes)?detail.available_routes.map(item=>text(item)).filter(Boolean):[];const episodes=Array.isArray(detail.episodes)?detail.episodes:[];let playlist=routes.map(route=>({title:route,videos:episodes.filter(episode=>text(episode.route)===route).map(episode=>({text:text(episode.name)||`第${text(episode.episode)}集`,url:normalizeUrl(episode.url)})).filter(episode=>Boolean(episode.url))})).filter(group=>group.videos.length>0);if(playlist.length===0){const singleUrl=normalizeUrl(detail.vod_play_url);if(singleUrl){playlist=[{title:\"\\u9ED8\\u8BA4\\u7EBF\\u8DEF\",videos:[{text:\"\\u7ACB\\u5373\\u64AD\\u653E\",url:singleUrl}]}]}}const descParts=[text(detail.type_name),text(detail.vod_year),text(detail.vod_area),text(detail.vod_lang),splitValues(detail.vod_class).join(\" / \"),splitValues(detail.vod_director).length?`导演: ${splitValues(detail.vod_director).join(\" / \")}`:\"\",splitValues(detail.vod_actor).length?`主演: ${splitValues(detail.vod_actor).slice(0,8).join(\" / \")}`:\"\",text(detail.vod_content)||text(detail.vod_blurb)].filter(Boolean);return{id:text(detail.vod_id)||movieId,title:text(detail.vod_name)||\"Untitled\",cover:coverOf(detail),remark:text(detail.vod_remarks),desc:descParts.join(\"\\n\"),playlist}",
+        "search": "const keyword=text(env.get(\"keyword\",\"\"));const page=Number(env.get(\"page\",1));if(!keyword)return[];return searchVideos(keyword,page)"
+      }
+    }
+  }
+]
